@@ -1,9 +1,11 @@
 package com.sedatbsp.springbootmicroserviceapigateway3.security;
 
+import com.sedatbsp.springbootmicroserviceapigateway3.model.Role;
 import com.sedatbsp.springbootmicroserviceapigateway3.security.jwt.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeHttpRequests()
                 .antMatchers("/api/authentication/**").permitAll() // login & register pre-path
+                .antMatchers(HttpMethod.GET, "/gateway/course").permitAll()
+                .antMatchers("/gateway/course/**").hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
